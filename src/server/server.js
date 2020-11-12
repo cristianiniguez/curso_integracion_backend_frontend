@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 import express from 'express';
 import dotenv from 'dotenv';
 import webpack from 'webpack';
@@ -9,6 +8,12 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { renderRoutes } from 'react-router-config';
 import { StaticRouter } from 'react-router-dom';
+
+import cookieParser from 'cookie-parser';
+import boom from '@hapi/boom';
+import passport from 'passport';
+import axios from 'axios';
+
 import serverRoutes from '../frontend/routes/serverRoutes';
 import reducer from '../frontend/reducers';
 import initialState from '../frontend/initialState';
@@ -19,11 +24,19 @@ dotenv.config();
 const { ENV, PORT } = process.env;
 const app = express();
 
+app.use(express.json());
+app.use(cookieParser());
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Basic Strategy
+require('./utils/auth/strategies/basic');
+
 if (ENV === 'development') {
   console.log('Development config');
-  const webpackConfig = require('../../webpack.config');
-  const webpacDevMiddleware = require('webpack-dev-middleware');
-  const webpacHotMiddleware = require('webpack-hot-middleware');
+  const webpackConfig = require('../../webpack.config'); // eslint-disable-line
+  const webpacDevMiddleware = require('webpack-dev-middleware'); // eslint-disable-line
+  const webpacHotMiddleware = require('webpack-hot-middleware'); // eslint-disable-line
   const compiler = webpack(webpackConfig);
   const serverConfig = {
     port: PORT,
@@ -85,6 +98,45 @@ const renderApp = (req, res) => {
   );
   res.send(setResponse(html, preloadedState, req.hashManifest));
 };
+
+app.post('/auth/sign-in', async (req, res, next) => {
+  const { rememberMe } = req.body;
+  passport.authenticate('basic', (error, data) => {
+    try {
+      if (error || !data) {
+        next(boom.unauthorized());
+      }
+      req.login(data, { session: false }, async (error) => {
+        if (error) {
+          next(error);
+        }
+        const { token, ...user } = data;
+        res.cookie('token', token, {
+          httpOnly: !config.dev,
+          secure: !config.dev,
+          maxAge: rememberMe ? THIRTY_DAYS_IN_MSEC : TWO_HOURS_IN_MSEC,
+        });
+        res.status(200).json(user);
+      });
+    } catch (error) {
+      next(error);
+    }
+  })(req, res, next);
+});
+
+app.post('/auth/sign-up', async (req, res, next) => {
+  const { body: user } = req;
+  try {
+    await axios({
+      url: `${config.apiUrl}/api/auth/sign-up`,
+      method: 'post',
+      data: user,
+    });
+    res.status(201).json({ message: 'user created' });
+  } catch (error) {
+    next(error);
+  }
+});
 
 app.get('*', renderApp);
 
