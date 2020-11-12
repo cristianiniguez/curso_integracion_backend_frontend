@@ -5,12 +5,12 @@ import PropTypes from 'prop-types';
 import { setFilter } from '../actions';
 import '../assets/styles/components/Search.scss';
 
-const Search = ({ isHome }) => {
+const Search = ({ isHome, setFilter }) => {
   const inputStyle = classNames('input', {
     isHome,
   });
   const handleSearch = (event) => {
-    props.setFilter(event.target.value);
+    setFilter(event.target.value);
   };
   return (
     <section className='main'>
