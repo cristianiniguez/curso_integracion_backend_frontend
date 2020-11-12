@@ -16,7 +16,6 @@ import axios from 'axios';
 
 import serverRoutes from '../frontend/routes/serverRoutes';
 import reducer from '../frontend/reducers';
-import initialState from '../frontend/initialState';
 import getManifest from './getManifest';
 
 dotenv.config();
@@ -85,18 +84,40 @@ const setResponse = (html, preloadedState, manifest) => {
 };
 
 const renderApp = (req, res) => {
+  let initialState;
+  const { email, name, id } = req.cookies;
+  if (id) {
+    initialState = {
+      user: {
+        email,
+        name,
+        id,
+      },
+      myList: [],
+      trends: [],
+      originals: [],
+    };
+  } else {
+    initialState = {
+      user: {},
+      myList: [],
+      trends: [],
+      originals: [],
+    };
+  }
   const store = createStore(reducer, initialState);
   const preloadedState = store.getState();
+  const isLogged = initialState.user.id;
   const html = renderToString(
     <Provider store={store}>
       <StaticRouter location={req.url} context={{}}>
-        {renderRoutes(serverRoutes)}
+        {renderRoutes(serverRoutes(isLogged))}
       </StaticRouter>
     </Provider>,
   );
   res.set(
     'Content-Security-Policy',
-    "default-src 'self'; img-src 'self' http://dummyimage.com https://gravatar.com; script-src 'self' 'sha256-n1jHrI2lN4ngk5Sy5hSo1W6k3uUvYHNkOoNvPbtTTo8=' 'unsafe-eval'; style-src-elem 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; media-src 'self' https://mdstrm.com",
+    "default-src 'self'; img-src 'self' http://dummyimage.com https://gravatar.com; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src-elem 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; media-src 'self' https://mdstrm.com",
   );
   res.send(setResponse(html, preloadedState, req.hashManifest));
 };
