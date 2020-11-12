@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { registerRequest } from '../actions';
+import { registerUser } from '../actions';
 import Header from '../components/Header';
 import '../assets/styles/components/Register.scss';
 
@@ -16,8 +16,7 @@ const Register = (props) => {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    props.registerRequest(form);
-    props.history.push('/');
+    props.registerUser(form, '/login');
   };
   return (
     <>
@@ -59,7 +58,7 @@ const Register = (props) => {
 };
 
 const mapDispatchToProps = {
-  registerRequest,
+  registerUser,
 };
 
 export default connect(null, mapDispatchToProps)(Register);

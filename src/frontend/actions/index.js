@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const setFavorite = (payload) => ({
   type: 'SET_FAVORITE',
   payload,
@@ -32,3 +34,20 @@ export const setFilter = (payload) => ({
   type: 'SET_FILTER',
   payload,
 });
+
+export const setError = (payload) => ({
+  type: 'SET_ERROR',
+  payload,
+});
+
+export const registerUser = (payload, redirectUrl) => {
+  return (dispatch) => {
+    axios
+      .post('/auth/sign-up', payload)
+      .then(({ data }) => dispatch(registerRequest(data)))
+      .then(() => {
+        window.location.href = redirectUrl;
+      })
+      .catch((error) => dispatch(setError(error)));
+  };
+};
