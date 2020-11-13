@@ -4,10 +4,11 @@
   "description": "",
   "main": "src/server",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack-cli --config webpack.config.js",
     "start:dev": "nodemon src/server/index.js",
-    "lint": "eslint src/frontend/ --ext .js --ext .jsx --fix"
+    "lint": "eslint src/frontend/ --ext .js --ext .jsx --fix",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "keywords": [],
   "author": "cristianiniguez <felizpc1@gmail.com>",
@@ -48,6 +49,8 @@
     "babel-loader": "^8.1.0",
     "compression-webpack-plugin": "^6.1.0",
     "css-loader": "^4.3.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.5",
     "eslint": "^7.13.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-loader": "^4.0.2",
@@ -55,6 +58,7 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.21.4",
     "file-loader": "^6.1.1",
+    "jest": "^26.6.3",
     "mini-css-extract-plugin": "^1.1.0",
     "node-sass": "^4.14.1",
     "nodemon": "^2.0.6",
@@ -65,5 +69,10 @@
     "webpack-dev-middleware": "^3.7.2",
     "webpack-dev-server": "^3.11.0",
     "webpack-hot-middleware": "^2.25.0"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/frontend/__test__/setupTest.js"
+    ]
   }
 }
