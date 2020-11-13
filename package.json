@@ -1,7 +1,7 @@
 {
   "name": "platzi_video_ssr",
   "version": "1.0.0",
-  "description": "",
+  "description": "Proyecto del Curso de Integración de Backend y Frontend de Platzi",
   "main": "src/server",
   "scripts": {
     "build": "webpack-cli --config webpack.config.js",
@@ -85,5 +85,13 @@
   },
   "engines": {
     "node": "12.16.x"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cristianiniguez/curso_integracion_backend_frontend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cristianiniguez/curso_integracion_backend_frontend/issues"
+  },
+  "homepage": "https://github.com/cristianiniguez/curso_integracion_backend_frontend#readme"
 }
