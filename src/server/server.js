@@ -21,8 +21,6 @@ import getManifest from './getManifest';
 dotenv.config();
 
 const { ENV, PORT } = process.env;
-const THIRTY_DAYS_IN_MSEC = 2592000000;
-const TWO_HOURS_IN_MSEC = 7200000;
 const app = express();
 
 app.use(express.json());
@@ -127,7 +125,6 @@ const renderApp = async (req, res) => {
 };
 
 app.post('/auth/sign-in', async (req, res, next) => {
-  const { rememberMe } = req.body;
   passport.authenticate('basic', (error, data) => {
     try {
       if (error || !data) {
@@ -138,11 +135,7 @@ app.post('/auth/sign-in', async (req, res, next) => {
           next(err);
         }
         const { token, ...user } = data;
-        res.cookie('token', token, {
-          httpOnly: !(ENV === 'development'),
-          secure: !(ENV === 'development'),
-          maxAge: rememberMe ? THIRTY_DAYS_IN_MSEC : TWO_HOURS_IN_MSEC,
-        });
+        res.cookie('token', token);
         res.status(200).json(user);
       });
     } catch (error) {
