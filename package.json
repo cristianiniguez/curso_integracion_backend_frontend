@@ -18,6 +18,8 @@
   "dependencies": {
     "@babel/core": "^7.12.3",
     "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-react": "^7.12.1",
     "@babel/register": "^7.12.1",
     "@hapi/boom": "^9.1.0",
     "asset-require-hook": "^1.2.0",
@@ -45,8 +47,6 @@
     "webpack-manifest-plugin": "^2.2.0"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.12.1",
-    "@babel/preset-react": "^7.12.1",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "compression-webpack-plugin": "^6.1.0",
